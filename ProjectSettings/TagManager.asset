@@ -41,3 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Nvl0
+    uniqueID: 2106579087
+    locked: 0
+  - name: Nvl1
+    uniqueID: 797025601
+    locked: 0
+  - name: Nvl2
+    uniqueID: 1703860893
+    locked: 0
+  - name: CanvasInicio
+    uniqueID: 168488387
+    locked: 0
+  - name: CanvasGalpon
+    uniqueID: 2467836903
+    locked: 0
