@@ -200,10 +200,10 @@ public class EstadisticasGalpon : MonoBehaviour
 
     public void ComprarAgua()
     {
-        if (agua <= 99)
+        if (agua <= 99 && cantntidadMonedas > 0)
         {
             agua += 1;
-            cantntidadMonedas -= 50;
+            cantntidadMonedas -= 5;
             txtAgua.text = string.Concat(agua, "%");
             txtMonedasGalpon.text = string.Concat("$", cantntidadMonedas);
             txtMonedasInicio.text = string.Concat("$", cantntidadMonedas);
@@ -212,10 +212,10 @@ public class EstadisticasGalpon : MonoBehaviour
 
     public void ComprarSalud()
     {
-        if (salud <= 99)
+        if (salud <= 99 && cantntidadMonedas > 0)
         {
             salud += 1;
-            cantntidadMonedas -= 50;
+            cantntidadMonedas -= 5;
             txtSalud.text = string.Concat(salud, "%");
             txtMonedasGalpon.text = string.Concat("$", cantntidadMonedas);
             txtMonedasInicio.text = string.Concat("$", cantntidadMonedas);
@@ -224,10 +224,10 @@ public class EstadisticasGalpon : MonoBehaviour
 
     public void ComprarComida()
     {
-        if (comida <= 99)
+        if (comida <= 99 && cantntidadMonedas > 0)
         {
             comida += 1;
-            cantntidadMonedas -= 50;
+            cantntidadMonedas -= 5;
             txtComida.text = string.Concat(comida, "%");
             txtMonedasGalpon.text = string.Concat("$", cantntidadMonedas);
             txtMonedasInicio.text = string.Concat("$", cantntidadMonedas);

@@ -35,24 +35,30 @@ public class EdadPollo : MonoBehaviour
                 pollo.SetActive(true);
                 temporizadorMadures = tiempoMadures;
                 banderaGrande = false;
-            } 
-        }       
+            }
+        }
     }
 
     public void ComprarPollito()
     {
-        pollito.SetActive(true);
-        pollo.SetActive(false);
-        banderaOcultarMostrar = false;
+        if (banderaGrande)
+        {
+            pollito.SetActive(true);
+            pollo.SetActive(false);
+            banderaOcultarMostrar = false;
+        }
     }
 
     public void VenderPollos()
     {
-        pollo.SetActive(false);
-        pollito.SetActive(false);
-        temporizadorMadures = tiempoMadures;
-        banderaGrande = true;
-        banderaOcultarMostrar = true;
+        if (!banderaGrande)
+        {
+            pollo.SetActive(false);
+            pollito.SetActive(false);
+            temporizadorMadures = tiempoMadures;
+            banderaGrande = true;
+            banderaOcultarMostrar = true;
+        }
     }
 
     public void MostrarOcultarPollo()
