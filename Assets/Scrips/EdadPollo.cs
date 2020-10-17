@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EdadPollo : MonoBehaviour
 {
@@ -11,11 +11,14 @@ public class EdadPollo : MonoBehaviour
 
     [Header("Tiempo para madures pollito a pollo")]
     [SerializeField] private float tiempoMadures;
+
+    [Header("Campo de texto de pollos vivos")]
+    [SerializeField] private Text txtPollosVivos;
+
     private float temporizadorMadures;
     private bool banderaGrande = true;
     private bool banderaOcultarMostrar = true;
 
-    // Start is called before the first frame update
     void Start()
     {
         temporizadorMadures = tiempoMadures;
@@ -23,19 +26,38 @@ public class EdadPollo : MonoBehaviour
 
     private void FixedUpdate()
     {
-        temporizadorMadures -= Time.deltaTime;
-        if (temporizadorMadures <= 0 && banderaGrande)
+        if (Convert.ToInt32(txtPollosVivos.text) > 0)
         {
-            pollito.SetActive(false);
-            pollo.SetActive(true);
-            temporizadorMadures = tiempoMadures;
-            banderaGrande = false;
-        }
+            temporizadorMadures -= Time.deltaTime;
+            if (temporizadorMadures <= 0 && banderaGrande)
+            {
+                pollito.SetActive(false);
+                pollo.SetActive(true);
+                temporizadorMadures = tiempoMadures;
+                banderaGrande = false;
+            } 
+        }       
+    }
+
+    public void ComprarPollito()
+    {
+        pollito.SetActive(true);
+        pollo.SetActive(false);
+        banderaOcultarMostrar = false;
+    }
+
+    public void VenderPollos()
+    {
+        pollo.SetActive(false);
+        pollito.SetActive(false);
+        temporizadorMadures = tiempoMadures;
+        banderaGrande = true;
+        banderaOcultarMostrar = true;
     }
 
     public void MostrarOcultarPollo()
     {
-        if (banderaOcultarMostrar)
+        if (Convert.ToInt32(txtPollosVivos.text) > 0 && banderaOcultarMostrar)
         {
             if (banderaGrande)
             {
@@ -47,7 +69,7 @@ public class EdadPollo : MonoBehaviour
             }
             banderaOcultarMostrar = false;
         }
-        else
+        else if (Convert.ToInt32(txtPollosVivos.text) > 0 && !banderaOcultarMostrar)
         {
             if (banderaGrande)
             {

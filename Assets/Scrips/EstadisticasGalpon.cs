@@ -43,6 +43,10 @@ public class EstadisticasGalpon : MonoBehaviour
     [SerializeField] private Text txtMonedasGalpon;
 
     private bool banderaTienda = true;
+
+    [Header("Tiempo para madures pollito a pollo")]
+    [SerializeField] private float tiempoMadures;
+    private float temporizadorMadures;
     #endregion
 
     #region Variables Compra y venta
@@ -50,8 +54,14 @@ public class EstadisticasGalpon : MonoBehaviour
     [SerializeField] private Canvas canvasComprarPollos;
     [Header("Canvas vender pollos")]
     [SerializeField] private Canvas canvasVentaPollos;
+    [Header("Campo de texto de niveles")]
+    [SerializeField] private Text txtNvl;
+    private int exp = 1000;
+    private int expNvl = 0;
+    private int Nvl = 0;
     private bool banderaComprarPollos = true;
     private bool banderaVentaPollos = true;
+    private bool banderaPollosVendido = false;
 
     [Header("Precio por pollo a comprar")]
     [SerializeField] private float precioPolloCompra;
@@ -65,8 +75,19 @@ public class EstadisticasGalpon : MonoBehaviour
     [Header("Campo de texto de buton al vender pollos")]
     [SerializeField] private Text txtVentaPollos;
 
-    private int cantidadPollosVivos;
-    private int cantidadPollosMuertos;
+    private int cantidadPollosVivos = 0;
+    private int cantidadPollosMuertos = 0;
+    #endregion
+
+    #region Variables de perder
+    [Header("Canvas de perder")]
+    [SerializeField] private Canvas canvasPerder;
+    #endregion
+
+    #region Varbiables de muertes
+    [Header("Tiempo entre muertes")]
+    [SerializeField] private float tiempoEsperaEntreMuertes;
+    private float contTiempoEsperaEntreMuertes;
     #endregion
 
     void Start()
@@ -82,15 +103,53 @@ public class EstadisticasGalpon : MonoBehaviour
         contTiempoAgua = tiempoAgua;
         contTiempoSalud = tiempoSalud;
         contTiempoComida = tiempoComida;
+        temporizadorMadures = tiempoMadures;
+        Nvl = 1;
+        txtNvl.text = Nvl.ToString();
+        contTiempoEsperaEntreMuertes = tiempoEsperaEntreMuertes;
         #endregion
     }
 
     private void FixedUpdate()
     {
+        txtPollosVivos.text = cantidadPollosVivos.ToString();
+        txtPollosMuertos.text = cantidadPollosMuertos.ToString();
         txtVentaPollos.text = cantidadPollosVivos.ToString();
-        ControlAgua();
-        ControlSalud();
-        ControlComida();
+        if (cantidadPollosVivos > 0)
+        {
+            ControlAgua();
+            ControlSalud();
+            ControlComida();
+
+            contTiempoEsperaEntreMuertes -= Time.deltaTime;
+            if (contTiempoEsperaEntreMuertes <= 0)
+            {
+                GestionMuertosPollos();
+                contTiempoEsperaEntreMuertes = tiempoEsperaEntreMuertes;
+            }
+
+            temporizadorMadures -= Time.deltaTime;
+            if (temporizadorMadures <= 0 && !banderaPollosVendido)
+            {
+                banderaPollosVendido = true;
+            }
+        }
+        Perdiste();
+    }
+
+    private void Perdiste()
+    {
+        if (cantidadPollosVivos == 0 && cantntidadMonedas < 1000)
+        {
+            canvasPerder.enabled = true;
+            Time.timeScale = 0;
+        }
+    }
+
+    private void GestionNiveles()
+    {
+        Nvl += 1;
+        txtNvl.text = Nvl.ToString();
     }
 
     #region Gestion galpon
@@ -224,7 +283,7 @@ public class EstadisticasGalpon : MonoBehaviour
 
     public void VenderLote()
     {
-        if (cantidadPollosVivos > 0)
+        if (cantidadPollosVivos > 0 && banderaPollosVendido)
         {
             cantntidadMonedas += (cantidadPollosVivos * precioPolloVenta);
             cantidadPollosVivos = 0;
@@ -233,6 +292,9 @@ public class EstadisticasGalpon : MonoBehaviour
             txtMonedasInicio.text = string.Concat("$", cantntidadMonedas);
             txtPollosMuertos.text = cantidadPollosMuertos.ToString();
             txtPollosVivos.text = cantidadPollosVivos.ToString();
+            temporizadorMadures = tiempoMadures;
+            banderaPollosVendido = false;
+            GestionNiveles();
         }
     }
 
@@ -261,6 +323,74 @@ public class EstadisticasGalpon : MonoBehaviour
         {
             canvasVentaPollos.enabled = false;
             banderaVentaPollos = true;
+        }
+    }
+    #endregion
+
+    #region Muertes
+    public void GestionMuertosPollos()
+    {
+        if (salud <= 75)
+        {
+            cantidadPollosMuertos += 3;
+            cantidadPollosVivos -= 3;
+        }
+        else if (salud <= 50)
+        {
+            cantidadPollosMuertos += 6;
+            cantidadPollosVivos -= 6;
+        }
+        else if (salud <= 25)
+        {
+            cantidadPollosMuertos += 9;
+            cantidadPollosVivos -= 9;
+        }
+        else if (salud == 0)
+        {
+            cantidadPollosMuertos += 12;
+            cantidadPollosVivos -= 12;
+        }
+
+        if (comida <= 75)
+        {
+            cantidadPollosMuertos += 1;
+            cantidadPollosVivos -= 1;
+        }
+        else if (comida <= 50)
+        {
+            cantidadPollosMuertos += 2;
+            cantidadPollosVivos -= 2;
+        }
+        else if (comida <= 25)
+        {
+            cantidadPollosMuertos += 3;
+            cantidadPollosVivos -= 3;
+        }
+        else if (comida == 0)
+        {
+            cantidadPollosMuertos += 5;
+            cantidadPollosVivos -= 5;
+        }
+
+        if (agua <= 75)
+        {
+            cantidadPollosMuertos += 1;
+            cantidadPollosVivos -= 1;
+        }
+        else if (agua <= 50)
+        {
+            cantidadPollosMuertos += 2;
+            cantidadPollosVivos -= 2;
+        }
+        else if (agua <= 25)
+        {
+            cantidadPollosMuertos += 3;
+            cantidadPollosVivos -= 3;
+        }
+        else if (agua == 0)
+        {
+            cantidadPollosMuertos += 5;
+            cantidadPollosVivos -= 5;
         }
     }
     #endregion

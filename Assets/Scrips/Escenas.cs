@@ -16,4 +16,13 @@ public class Escenas : MonoBehaviour
         SceneManager.LoadScene(2);
     }
 
+    public void EscenaPrincipal()
+    {
+        SceneManager.LoadScene("Inicio");
+    }
+
+    public void Jugar()
+    {
+        Time.timeScale = 1;
+    }
 }
